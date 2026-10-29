@@ -1,0 +1,345 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Tone K1TABisa</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=DM+Sans:wght@400;500;700&display=swap">
+<style>
+/* Layout: foto besar di kiri, kontrol sederhana di kanan; di layar sempit kontrol turun ke bawah foto. */
+:root {
+  --terang: #C8F3FF;
+  --tengah: #E4CE80;
+  --gelap: #FFAA00;
+  --ink: #2B1B00;
+  --bg: #e9f8fc;
+  --surface: #ffffff;
+  --fg: #16262b;
+  --muted: #526a71;
+  --line: #bfdde6;
+  --stage: #d6eef5;
+  --on-accent: #2B1B00;
+  --focus: #0a5fd6;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "DM Sans", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f191c; --surface: #172326; --fg: #e8f6fa; --muted: #93b0b8;
+    --line: #2b3f44; --stage: #0b1315; --focus: #7db4ff; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f191c; --surface: #172326; --fg: #e8f6fa; --muted: #93b0b8;
+  --line: #2b3f44; --stage: #0b1315; --focus: #7db4ff; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--font-body); font-size: 15px; line-height: 1.5;
+  padding-block: 28px 44px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 1080px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
+header { display: flex; flex-direction: column; gap: 10px; }
+h1 {
+  font-family: var(--font-display); font-weight: 800; letter-spacing: -0.025em; line-height: 1.04;
+  font-size: clamp(30px, 5.5vw, 46px); margin: 0; text-wrap: balance;
+}
+header p { margin: 0; color: var(--muted); max-width: 58ch; }
+.tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.tag { font-family: var(--font-display); font-weight: 800; font-size: 16px; padding: 3px 11px; border-radius: 4px; background: var(--ink); color: var(--terang); }
+.tag.b { color: var(--tengah); }
+
+.app { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 20px; align-items: start; }
+@media (max-width: 820px) { .app { grid-template-columns: minmax(0, 1fr); } }
+.stage-col { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.stage {
+  position: relative; background: var(--stage); border: 1px solid var(--line); border-radius: 6px; padding: 12px;
+  min-height: 260px; display: flex; align-items: center; justify-content: center;
+}
+.stage canvas { display: block; max-width: 100%; max-height: 78vh; width: auto; height: auto; border-radius: 2px; }
+.stage.drag { outline: 2px dashed var(--gelap); outline-offset: -8px; }
+.drop-hint {
+  position: absolute; inset: 0; display: none; align-items: center; justify-content: center; pointer-events: none;
+  background: color-mix(in srgb, var(--stage) 82%, transparent); font-family: var(--font-display); font-weight: 800; font-size: 20px;
+}
+.stage.drag .drop-hint { display: flex; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 14px; justify-content: space-between; color: var(--muted); font-size: 13px; }
+.sample {
+  font-size: 11.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  background: var(--ink); color: var(--terang); padding: 1px 7px; border-radius: 3px; margin-right: 6px;
+}
+
+.panel {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 18px;
+  display: flex; flex-direction: column; gap: 20px; min-width: 0;
+}
+.swatches { display: flex; flex-direction: column; gap: 8px; }
+.swatches .bar { height: 26px; border-radius: 4px; background: linear-gradient(90deg, var(--gelap), var(--tengah), var(--terang)); border: 1px solid var(--line); }
+.swatches ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; font-size: 12.5px; color: var(--muted); }
+.swatches li { display: flex; flex-direction: column; }
+.swatches code { font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; font-size: 12.5px; color: var(--fg); }
+.slider { display: flex; flex-direction: column; gap: 4px; }
+.slider .row { display: flex; justify-content: space-between; font-size: 14px; }
+.slider output { color: var(--muted); font-variant-numeric: tabular-nums; }
+input[type="range"] { width: 100%; accent-color: var(--gelap); margin: 0; height: 24px; }
+.group { display: flex; flex-direction: column; gap: 12px; }
+.actions { display: flex; flex-direction: column; gap: 8px; }
+.btn {
+  appearance: none; font: inherit; font-weight: 700; cursor: pointer; text-align: center;
+  border: 1px solid var(--line); background: var(--surface); color: var(--fg);
+  border-radius: 5px; padding: 10px 14px; min-height: 46px; user-select: none; -webkit-user-select: none;
+  display: inline-flex; align-items: center; justify-content: center; touch-action: manipulation;
+}
+.btn:hover { border-color: var(--muted); }
+.btn.primary { background: var(--gelap); border-color: var(--gelap); color: var(--on-accent); }
+.btn.primary:hover { filter: brightness(1.05); }
+.btn.quiet { font-weight: 500; color: var(--muted); }
+.row2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.btn:focus-visible, input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+input[type="file"] { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.status { margin: 0; min-height: 1.4em; font-size: 13px; color: var(--muted); }
+.fallback { display: none; flex-direction: column; gap: 8px; }
+.fallback.on { display: flex; }
+.fallback p { margin: 0; font-size: 13px; color: var(--muted); }
+.fallback img { max-width: 100%; height: auto; border-radius: 3px; border: 1px solid var(--line); }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="tags"><span class="tag">#K1TABisa</span><span class="tag b">#ManifestasiAsa</span></div>
+    <h1>Ganti tone fotomu ke warna 01</h1>
+    <p>Pilih foto, tone warnanya langsung berubah jadi kuning, krem, dan biru muda. Foto diproses di perangkatmu dan tidak diunggah ke server.</p>
+  </header>
+
+  <div class="app">
+    <section class="stage-col" aria-label="Pratinjau">
+      <div class="stage" id="stage">
+        <canvas id="view" aria-label="Pratinjau foto dengan tone 01"></canvas>
+        <div class="drop-hint">Lepas foto di sini</div>
+      </div>
+      <div class="meta">
+        <span id="info"></span>
+        <span id="mode">Dengan tone 01</span>
+      </div>
+    </section>
+
+    <aside class="panel" aria-label="Pengaturan">
+      <div class="actions">
+        <label class="btn primary" for="file">Pilih foto</label>
+        <input type="file" id="file" accept="image/*">
+        <p class="status" id="status" role="status" aria-live="polite">Atau seret foto ke area pratinjau.</p>
+      </div>
+
+      <div class="swatches">
+        <div class="bar" role="img" aria-label="Gradasi dari kuning, krem, ke biru muda"></div>
+        <ul>
+          <li><span>Gelap</span><code>#FFAA00</code></li>
+          <li><span>Tengah</span><code>#E4CE80</code></li>
+          <li><span>Terang</span><code>#C8F3FF</code></li>
+        </ul>
+      </div>
+
+      <div class="group">
+        <div class="slider">
+          <div class="row"><label for="k">Kekuatan tone</label><output id="kOut" for="k"></output></div>
+          <input type="range" id="k" min="0" max="100" value="100">
+        </div>
+        <div class="slider">
+          <div class="row"><label for="con">Kontras</label><output id="conOut" for="con"></output></div>
+          <input type="range" id="con" min="-50" max="50" value="10">
+        </div>
+        <div class="slider">
+          <div class="row"><label for="bri">Kecerahan</label><output id="briOut" for="bri"></output></div>
+          <input type="range" id="bri" min="-50" max="50" value="5">
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="hold" type="button">Tahan untuk lihat foto asli</button>
+        <div class="row2">
+          <button class="btn quiet" id="reset" type="button">Atur ulang</button>
+          <button class="btn primary" id="save" type="button">Simpan foto</button>
+        </div>
+      </div>
+
+      <div class="fallback" id="fallback">
+        <p>Tombol simpan tidak tersedia di tampilan ini. Tekan lama gambar di bawah (atau klik kanan) lalu pilih simpan.</p>
+        <img id="outImg" alt="Foto hasil tone 01">
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var COLORS = ["#FFAA00", "#E4CE80", "#C8F3FF"]; // gelap, tengah, terang
+  var DEF = { k: 100, con: 10, bri: 5 };
+  var S = { src: null, name: "foto", sample: true, k: DEF.k, con: DEF.con, bri: DEF.bri, showOrig: false, raf: 0, blobUrl: "" };
+  var view = $("view");
+
+  function hexToRgb(h) { var n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; }
+
+  function buildLut() {
+    var s = hexToRgb(COLORS[0]), m = hexToRgb(COLORS[1]), h = hexToRgb(COLORS[2]);
+    var lut = new Uint8ClampedArray(768), cf = 1 + S.con / 50, bf = S.bri / 100;
+    for (var i = 0; i < 256; i++) {
+      var t = (i / 255 - 0.5) * cf + 0.5 + bf;
+      t = t < 0 ? 0 : t > 1 ? 1 : t;
+      var a, b, u;
+      if (t < 0.5) { a = s; b = m; u = t * 2; } else { a = m; b = h; u = (t - 0.5) * 2; }
+      lut[i * 3] = a[0] + (b[0] - a[0]) * u;
+      lut[i * 3 + 1] = a[1] + (b[1] - a[1]) * u;
+      lut[i * 3 + 2] = a[2] + (b[2] - a[2]) * u;
+    }
+    return lut;
+  }
+
+  function renderTo(cv, maxSide, plain) {
+    var sw = S.src.width, sh = S.src.height, sc = Math.min(1, maxSide / Math.max(sw, sh));
+    var w = Math.max(1, Math.round(sw * sc)), h = Math.max(1, Math.round(sh * sc));
+    cv.width = w; cv.height = h;
+    var ctx = cv.getContext("2d", { willReadFrequently: true });
+    ctx.drawImage(S.src, 0, 0, w, h);
+    if (plain) return;
+    var id = ctx.getImageData(0, 0, w, h), d = id.data, lut = buildLut(), k = S.k / 100;
+    for (var i = 0; i < d.length; i += 4) {
+      var r = d[i], g = d[i + 1], b = d[i + 2];
+      var o = ((0.2126 * r + 0.7152 * g + 0.0722 * b) | 0) * 3;
+      d[i] = r + (lut[o] - r) * k;
+      d[i + 1] = g + (lut[o + 1] - g) * k;
+      d[i + 2] = b + (lut[o + 2] - b) * k;
+    }
+    ctx.putImageData(id, 0, 0);
+  }
+
+  function draw() {
+    S.raf = 0;
+    if (!S.src) return;
+    renderTo(view, 1400, S.showOrig);
+    $("mode").textContent = S.showOrig ? "Foto asli" : "Dengan tone 01";
+  }
+  function schedule() { if (!S.raf) S.raf = requestAnimationFrame(draw); }
+
+  function syncUI() {
+    $("k").value = S.k; $("con").value = S.con; $("bri").value = S.bri;
+    $("kOut").textContent = S.k + "%";
+    $("conOut").textContent = (S.con > 0 ? "+" : "") + S.con;
+    $("briOut").textContent = (S.bri > 0 ? "+" : "") + S.bri;
+  }
+
+  function makeSample() {
+    var c = document.createElement("canvas"); c.width = 1200; c.height = 900;
+    var x = c.getContext("2d"), g = x.createLinearGradient(0, 0, 0, 900);
+    g.addColorStop(0, "#2a58a6"); g.addColorStop(0.45, "#86bdf0"); g.addColorStop(0.66, "#f7e6c4"); g.addColorStop(1, "#f7e6c4");
+    x.fillStyle = g; x.fillRect(0, 0, 1200, 900);
+    g = x.createRadialGradient(860, 380, 10, 860, 380, 260);
+    g.addColorStop(0, "rgba(255,255,255,1)"); g.addColorStop(0.35, "rgba(255,244,214,0.85)"); g.addColorStop(1, "rgba(255,244,214,0)");
+    x.fillStyle = g; x.fillRect(0, 60, 1200, 700);
+    function ridge(color, base, amp, seed) {
+      x.fillStyle = color; x.beginPath(); x.moveTo(0, 900);
+      for (var px = 0; px <= 1200; px += 30) {
+        x.lineTo(px, base - amp * Math.abs(Math.sin(px * 0.009 + seed)) - amp * 0.5 * Math.sin(px * 0.024 + seed * 2));
+      }
+      x.lineTo(1200, 900); x.closePath(); x.fill();
+    }
+    ridge("#6d8fb0", 560, 140, 1.2); ridge("#3f6e58", 620, 110, 3.4); ridge("#234a37", 670, 80, 5.1);
+    g = x.createLinearGradient(0, 670, 0, 900); g.addColorStop(0, "#79b0dc"); g.addColorStop(1, "#1f4a74");
+    x.fillStyle = g; x.fillRect(0, 670, 1200, 230);
+    x.fillStyle = "rgba(255,248,225,0.55)";
+    for (var i = 0; i < 8; i++) x.fillRect(760 + i * 8, 700 + i * 24, 200 - i * 18, 7);
+    x.fillStyle = "#14281e"; x.fillRect(180, 520, 16, 170);
+    [[188, 480, 66], [148, 530, 52], [230, 535, 50], [188, 430, 46]].forEach(function (t) {
+      x.beginPath(); x.arc(t[0], t[1], t[2], 0, 6.2832); x.fill();
+    });
+    return c;
+  }
+
+  function setSource(src, name, sample) {
+    S.src = src; S.name = name; S.sample = sample;
+    var info = $("info"); info.textContent = "";
+    if (sample) { var b = document.createElement("span"); b.className = "sample"; b.textContent = "Contoh"; info.appendChild(b); }
+    info.appendChild(document.createTextNode((sample ? "" : name + " · ") + src.width + " × " + src.height + " px"));
+    $("fallback").classList.remove("on");
+    schedule();
+  }
+
+  function loadFile(file) {
+    var status = $("status");
+    if (!file || file.type.indexOf("image/") !== 0) { status.textContent = "File itu bukan gambar. Pilih JPG, PNG, atau WebP."; return; }
+    status.textContent = "Memuat foto…";
+    var base = (file.name || "foto").replace(/\.[^.]+$/, "");
+    var done = function (src) { setSource(src, base, false); status.textContent = "Foto dimuat."; };
+    var fail = function () { status.textContent = "Foto tidak bisa dibuka. Coba foto lain."; };
+    var viaImg = function () {
+      var im = new Image();
+      im.onload = function () { done(im); }; im.onerror = fail;
+      im.src = URL.createObjectURL(file);
+    };
+    if (window.createImageBitmap) { createImageBitmap(file).then(done).catch(viaImg); } else { viaImg(); }
+  }
+
+  function bind() {
+    $("file").addEventListener("change", function (e) { loadFile(e.target.files[0]); e.target.value = ""; });
+    ["k", "con", "bri"].forEach(function (id) {
+      $(id).addEventListener("input", function (e) { S[id] = +e.target.value; syncUI(); schedule(); });
+    });
+    $("reset").addEventListener("click", function () { S.k = DEF.k; S.con = DEF.con; S.bri = DEF.bri; syncUI(); schedule(); });
+
+    var hold = $("hold");
+    function on() { S.showOrig = true; schedule(); }
+    function off() { if (S.showOrig) { S.showOrig = false; schedule(); } }
+    hold.addEventListener("pointerdown", function (e) { e.preventDefault(); on(); });
+    ["pointerup", "pointerleave", "pointercancel", "blur"].forEach(function (ev) { hold.addEventListener(ev, off); });
+    hold.addEventListener("keydown", function (e) { if (e.key === " " || e.key === "Enter") { e.preventDefault(); on(); } });
+    hold.addEventListener("keyup", function (e) { if (e.key === " " || e.key === "Enter") off(); });
+    hold.addEventListener("contextmenu", function (e) { e.preventDefault(); });
+
+    var stage = $("stage");
+    ["dragenter", "dragover"].forEach(function (ev) { stage.addEventListener(ev, function (e) { e.preventDefault(); stage.classList.add("drag"); }); });
+    ["dragleave", "drop"].forEach(function (ev) { stage.addEventListener(ev, function (e) { e.preventDefault(); stage.classList.remove("drag"); }); });
+    stage.addEventListener("drop", function (e) { var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; if (f) loadFile(f); });
+
+    $("save").addEventListener("click", save);
+  }
+
+  function showFallback(blob) {
+    if (S.blobUrl) URL.revokeObjectURL(S.blobUrl);
+    S.blobUrl = URL.createObjectURL(blob);
+    $("outImg").src = S.blobUrl;
+    $("fallback").classList.add("on");
+  }
+
+  function save() {
+    if (!S.src) return;
+    var status = $("status");
+    status.textContent = "Menyiapkan gambar…";
+    var out = document.createElement("canvas");
+    renderTo(out, 4096, false);
+    out.toBlob(function (blob) {
+      if (!blob) { status.textContent = "Gambar gagal dibuat. Coba foto yang lebih kecil."; return; }
+      var filename = (S.name || "foto") + "-tone01.jpg";
+      var fallback = function () { showFallback(blob); status.textContent = "Simpan lewat gambar di bawah."; };
+      if (!window.claude || !window.claude.use) { fallback(); return; }
+      window.claude.use("downloads").then(function (dl) {
+        if (!dl) { fallback(); return; }
+        return dl.save({ filename: filename, data: blob }).then(function () {
+          status.textContent = "Tersimpan sebagai " + filename + ".";
+        }, function (err) {
+          if (err && err.code === "declined") status.textContent = "Simpan dibatalkan.";
+          else if (err && err.code === "rate_limited") status.textContent = "Tunggu sebentar, lalu coba lagi.";
+          else fallback();
+        });
+      }, fallback);
+    }, "image/jpeg", 0.92);
+  }
+
+  bind();
+  syncUI();
+  setSource(makeSample(), "contoh", true);
+})();
+</script>
+
+</body></html>
